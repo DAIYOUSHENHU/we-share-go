@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"we-share-go/server"
+)
 
 func main() {
-	fmt.Println("hello world")
+	server.ServerStart("9632")
 }
