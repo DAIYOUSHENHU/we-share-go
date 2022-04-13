@@ -9,38 +9,54 @@ import (
 )
 
 type TUser struct {
-	Id int64
+	ID int64 `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
 	//昵称
-	NickName string
+	NickName string `gorm:"type:varchar(20);not null" json:"nickname"`
 	//用户名
-	UserName string
+	UserName string `gorm:"type:varchar(20);not null" json:"username"`
 	//密码
-	Pwd string
+	Pwd string `gorm:"type:varchar(20);not null" json:"pwd"`
 	//是否已删除.0为正常，1为已删除
-	Deleted int
+	Deleted int `gorm:"type:int;not null" json:"delete"`
 
 	CreateTime time.Time
 }
 
 //用来检查参数是否正确
 func (c *TUser) Check() error {
+	if !db.MysqlDB.HasTable(&TUser{}) {
+		db.MysqlDB.AutoMigrate(&TUser{})
+		if db.MysqlDB.HasTable(&TUser{}) {
+			fmt.Println("user表创建成功")
+		} else {
+			fmt.Println("user表创建失败")
+		}
+	} else {
+		fmt.Println("表已存在")
+	}
 	if c.UserName == "" {
 		return errors.New("用户名不能为空")
 	}
 	if len(c.UserName) < 5 {
 		return errors.New("用户名必须大于4位")
 	}
-	user := &TUser{
-		UserName: c.UserName,
-	}
-	get := db.MysqlDB.Limit(1).Find(&user)
-	if get.Error != nil {
-		fmt.Println(fmt.Errorf("Check Get err : %v", get.Error))
-		return errors.New("服务器繁忙请稍后重试")
-	}
-	if get != nil {
+	fmt.Println("check user")
+	fmt.Println(c)
+	fmt.Println(c.UserName)
+
+	var user TUser
+	var count int
+	fmt.Println("49: ", user)
+	fmt.Println("username: ", user.UserName)
+	db.MysqlDB.Where("user_name=?", c.UserName).First(&user).Count(&count)
+	fmt.Println("52: ", user)
+	fmt.Println("55: ", count)
+
+	if count != 0 {
 		return errors.New("用户名已存在")
 	}
+
+	// db.MysqlDB.Where("username=?", c.UserName).First(&user)
 
 	if c.Pwd == "" {
 		return errors.New("密码不能为空")
