@@ -22,7 +22,7 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	err = u.Check()
+	err = u.CheckRegister()
 	if err != nil {
 		fmt.Println(fmt.Errorf("Register Check err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -43,4 +43,30 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "ok",
 	})
+}
+
+func Login(c *gin.Context) {
+	u := &model.TUser{}
+	err := c.BindJSON(u)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Register BindJSON err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "数据格式不正确",
+		})
+		return
+	}
+	err = u.CheckLogin()
+	if err != nil {
+		fmt.Println(fmt.Errorf("Register Check err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"msg":   "ok",
+		"token": "login",
+	})
+
 }

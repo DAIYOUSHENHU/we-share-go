@@ -21,5 +21,6 @@ func RegRouter(g *gin.Engine) {
 	})
 
 	g1.POST("/register", api.Register)
+	g1.POST("/login", api.Login)
 
 }
