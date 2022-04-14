@@ -63,10 +63,12 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+	role := u.CheckRole()
 
 	c.JSON(http.StatusOK, gin.H{
 		"msg":   "ok",
 		"token": "login",
+		"role":  role,
 	})
 
 }

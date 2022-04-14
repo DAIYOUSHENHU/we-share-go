@@ -14,6 +14,8 @@ type TUser struct {
 	UserName string `gorm:"type:varchar(20);not null" json:"username"`
 	//密码
 	Pwd string `gorm:"type:varchar(20);not null" json:"pwd"`
+	//角色，0为普通用户，1为组织，2为管理员
+	Role int `gorm:"type:int;not null" json:"role"`
 	//是否已删除.0为正常，1为已删除
 	Deleted int `gorm:"type:int;not null" json:"delete"`
 
@@ -22,8 +24,8 @@ type TUser struct {
 
 //用来检查参数是否正确
 func (c *TUser) CheckRegister() error {
+	db.MysqlDB.AutoMigrate(&TUser{})
 	if !db.MysqlDB.HasTable(&TUser{}) {
-		db.MysqlDB.AutoMigrate(&TUser{})
 		if db.MysqlDB.HasTable(&TUser{}) {
 			fmt.Println("user表创建成功")
 		} else {
@@ -50,7 +52,6 @@ func (c *TUser) CheckRegister() error {
 
 	compile, err := regexp.Compile(`^(.{6,16}[^0-9]*[^A-Z]*[^a-z]*[a-zA-Z0-9]*)$`)
 	if err != nil {
-		fmt.Println(fmt.Errorf("Check regexp err : %v", err))
 		return errors.New("服务器繁忙请稍后重试")
 	}
 	b := compile.MatchString(c.Pwd)
@@ -63,15 +64,9 @@ func (c *TUser) CheckRegister() error {
 
 //用来检查参数是否正确
 func (c *TUser) CheckLogin() error {
+	db.MysqlDB.AutoMigrate(&TUser{})
 	if !db.MysqlDB.HasTable(&TUser{}) {
-		db.MysqlDB.AutoMigrate(&TUser{})
-		if db.MysqlDB.HasTable(&TUser{}) {
-			fmt.Println("user表创建成功")
-		} else {
-			fmt.Println("user表创建失败")
-		}
-	} else {
-		fmt.Println("表已存在")
+		fmt.Println("表不存在")
 	}
 	if c.UserName == "" {
 		return errors.New("用户名不能为空")
@@ -93,4 +88,12 @@ func (c *TUser) CheckLogin() error {
 	}
 
 	return nil
+}
+
+func (c *TUser) CheckRole() int {
+	var user TUser
+	var count int
+	db.MysqlDB.Where("user_name=?", c.UserName).First(&user).Count(&count)
+
+	return user.Role
 }
