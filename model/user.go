@@ -44,12 +44,13 @@ func (c *TUser) CheckRegister() error {
 
 	var user TUser
 	var count int
+	// 根据用户名查询
 	db.MysqlDB.Where("user_name=?", c.UserName).First(&user).Count(&count)
 
 	if count != 0 {
 		return errors.New("用户名已存在")
 	}
-
+	// 检验密码合法性
 	compile, err := regexp.Compile(`^(.{6,16}[^0-9]*[^A-Z]*[^a-z]*[a-zA-Z0-9]*)$`)
 	if err != nil {
 		return errors.New("服务器繁忙请稍后重试")
@@ -64,6 +65,7 @@ func (c *TUser) CheckRegister() error {
 
 //用来检查参数是否正确
 func (c *TUser) CheckLogin() error {
+	// user表自动迁移
 	db.MysqlDB.AutoMigrate(&TUser{})
 	if !db.MysqlDB.HasTable(&TUser{}) {
 		fmt.Println("表不存在")
@@ -94,6 +96,6 @@ func (c *TUser) CheckRole() int {
 	var user TUser
 	var count int
 	db.MysqlDB.Where("user_name=?", c.UserName).First(&user).Count(&count)
-
+	// 返回用户角色
 	return user.Role
 }

@@ -68,7 +68,7 @@ func GetShareGood(c *gin.Context) {
 			return
 		}
 	} else {
-		askgoods, err = g.GetAllGoodsByName(goodName)
+		askgoods, err = g.GetGoodsByName(goodName)
 		if err != nil {
 			fmt.Println(fmt.Errorf("GetAllGoodsByName err : %v", err))
 			c.JSON(http.StatusInternalServerError, gin.H{

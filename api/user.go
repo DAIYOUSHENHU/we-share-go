@@ -48,6 +48,7 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	u := &model.TUser{}
 	err := c.BindJSON(u)
+	//检查数据是否成功绑定
 	if err != nil {
 		fmt.Println(fmt.Errorf("Register BindJSON err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -55,6 +56,7 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+	// 检查login数据是否合法
 	err = u.CheckLogin()
 	if err != nil {
 		fmt.Println(fmt.Errorf("Register Check err : %v", err))
@@ -63,8 +65,9 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+	//检查角色
 	role := u.CheckRole()
-
+	// 根据角色返回数据
 	c.JSON(http.StatusOK, gin.H{
 		"msg":   "ok",
 		"token": "login",

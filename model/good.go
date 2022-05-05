@@ -52,7 +52,7 @@ func (g *TAskGood) GetAllGoods() (askgoods []TAskGood, err error) {
 	return
 }
 
-func (g *TAskGood) GetAllGoodsByName(goodName string) (askgoods []TAskGood, err error) {
+func (g *TAskGood) GetGoodsByName(goodName string) (askgoods []TAskGood, err error) {
 	//select * from TAskGood
 	db.MysqlDB.Where("good_name LIKE ?", goodName).Find(askgoods)
 	return
