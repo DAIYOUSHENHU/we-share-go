@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -11,7 +12,7 @@ import (
 )
 
 func AddShareGood(c *gin.Context) {
-	g := &model.TAskGood{}
+	g := &model.Good{}
 	err := c.BindJSON(g)
 	if err != nil {
 		fmt.Println(fmt.Errorf("askgood BindJSON err : %v", err))
@@ -20,7 +21,7 @@ func AddShareGood(c *gin.Context) {
 		})
 		return
 	}
-	g.CheckAskGood()
+	err = g.CheckGood()
 	if err != nil {
 		fmt.Println(fmt.Errorf("askgood Check err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -45,7 +46,7 @@ func AddShareGood(c *gin.Context) {
 
 func GetShareGood(c *gin.Context) {
 	var err error
-	g := &model.TAskGood{}
+	g := &model.Good{}
 	err = c.BindJSON(g)
 	if err != nil {
 		fmt.Println(fmt.Errorf("askgood BindJSON err : %v", err))
@@ -56,10 +57,10 @@ func GetShareGood(c *gin.Context) {
 	}
 
 	goodName := g.GoodName
-	var askgoods []model.TAskGood
+	var goods []model.Good
 
 	if goodName == "" {
-		askgoods, err = g.GetAllGoods()
+		goods, err = g.GetAllGoods()
 		if err != nil {
 			fmt.Println(fmt.Errorf("GetAllGoods err : %v", err))
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -68,7 +69,7 @@ func GetShareGood(c *gin.Context) {
 			return
 		}
 	} else {
-		askgoods, err = g.GetGoodsByName(goodName)
+		goods, err = g.GetGoodsByName(goodName)
 		if err != nil {
 			fmt.Println(fmt.Errorf("GetAllGoodsByName err : %v", err))
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -77,10 +78,18 @@ func GetShareGood(c *gin.Context) {
 			return
 		}
 	}
-
+	goodsMarshal, err := json.Marshal(goods)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Marshal good err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	fmt.Println(string(goodsMarshal))
 	c.JSON(http.StatusOK, gin.H{
 		"msg":  "ok",
-		"data": askgoods,
+		"data": string(goodsMarshal),
 	})
 
 }

@@ -22,6 +22,7 @@ func RegRouter(g *gin.Engine) {
 
 	u.POST("/register", api.Register)
 	u.POST("/login", api.Login)
+	//新增请求物资信息
 	u.POST("/askhelp", api.Askhelp)
 
 	// 组织api接口

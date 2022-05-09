@@ -39,6 +39,15 @@ func AddOrgan(c *gin.Context) {
 		})
 		return
 	}
+	u := &model.TUser{}
+	err = u.UpdateRole(or.UserId)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Register Check err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "ok",

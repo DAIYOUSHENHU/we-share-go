@@ -11,17 +11,17 @@ type Organ struct {
 	ID        int64  `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
 	OrganName string `gorm:"type:varchar(20);not null" json:"organname"`
 	//用户id
-	UserId  string `gorm:"type:varchar(20);not null" json:"userid"`
-	Deleted int    `gorm:"type:int;not null" json:"delete"`
+	UserId  int64 `gorm:"not null" json:"userid"`
+	Deleted int   `gorm:"type:int;not null" json:"delete"`
 
 	CreateTime time.Time
 }
 
 //用来检查参数是否正确
 func (c *Organ) CheckOrgan() error {
-	db.MysqlDB.AutoMigrate(&Organ{})
-	if !db.MysqlDB.HasTable(&Organ{}) {
-		if db.MysqlDB.HasTable(&Organ{}) {
+	db.MysqlDB.AutoMigrate(Organ{})
+	if !db.MysqlDB.HasTable(Organ{}) {
+		if db.MysqlDB.HasTable(Organ{}) {
 			fmt.Println("organ表创建成功")
 		} else {
 			fmt.Println("organ表创建失败")

@@ -107,3 +107,14 @@ func (c *TUser) GetUserInfo() TUser {
 	// 返回用户角色
 	return user
 }
+
+//更新角色
+func (c *TUser) UpdateRole(id int64) error {
+	var user TUser
+	if c.Role != 0 {
+		return errors.New("该用户已成为组织")
+	}
+	db.MysqlDB.Model(&user).Where("id=?", id).Update("role", 1)
+
+	return nil
+}
