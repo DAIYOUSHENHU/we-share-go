@@ -23,6 +23,13 @@ func RegRouter(g *gin.Engine) {
 	u.POST("/register", api.Register)
 	u.POST("/login", api.Login)
 
+	// 组织api接口
+	or := g.Group("/organ")
+	//中间件
+	or.Use(mid.MidCors)
+
+	or.POST("/addOrgan", api.AddOrgan)
+
 	// 物资api接口
 	g1 := g.Group("/good")
 	//中间件

@@ -99,3 +99,11 @@ func (c *TUser) CheckRole() int {
 	// 返回用户角色
 	return user.Role
 }
+
+func (c *TUser) GetUserInfo() TUser {
+	var user TUser
+	// db.MysqlDB.Where("user_name=?", c.UserName).First(&user).Count(&count)
+	db.MysqlDB.Select("id").Where("user_name=?", c.UserName).First(&user)
+	// 返回用户角色
+	return user
+}

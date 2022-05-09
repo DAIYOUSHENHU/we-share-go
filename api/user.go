@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -67,11 +68,22 @@ func Login(c *gin.Context) {
 	}
 	//检查角色
 	role := u.CheckRole()
+
+	userInfo := u.GetUserInfo()
+	userInfoMarshal, err := json.Marshal(userInfo)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Marshal userInfo err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
 	// 根据角色返回数据
 	c.JSON(http.StatusOK, gin.H{
-		"msg":   "ok",
-		"token": "login",
-		"role":  role,
+		"msg":      "ok",
+		"token":    "login",
+		"role":     role,
+		"userInfo": string(userInfoMarshal),
 	})
 
 }
