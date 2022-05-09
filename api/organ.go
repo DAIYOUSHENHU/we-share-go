@@ -16,7 +16,7 @@ func AddOrgan(c *gin.Context) {
 	or := &model.Organ{}
 	err := c.BindJSON(or)
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register BindJSON err : %v", err))
+		fmt.Println(fmt.Errorf("organ BindJSON err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "数据格式不正确",
 		})
@@ -24,7 +24,7 @@ func AddOrgan(c *gin.Context) {
 	}
 	err = or.CheckOrgan()
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register Check err : %v", err))
+		fmt.Println(fmt.Errorf("organ Check err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})
@@ -33,7 +33,7 @@ func AddOrgan(c *gin.Context) {
 	or.CreateTime = time.Now()
 	result := db.MysqlDB.Create(or)
 	if result.Error != nil {
-		fmt.Println(fmt.Errorf("Register Insert err : %v", err))
+		fmt.Println(fmt.Errorf("organ Insert err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})
@@ -42,7 +42,7 @@ func AddOrgan(c *gin.Context) {
 	u := &model.TUser{}
 	err = u.UpdateRole(or.UserId)
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register Check err : %v", err))
+		fmt.Println(fmt.Errorf("organ update err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})

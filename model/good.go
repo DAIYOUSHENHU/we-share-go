@@ -31,9 +31,9 @@ func (g *Good) CheckGood() error {
 	db.MysqlDB.AutoMigrate(&Good{})
 	if !db.MysqlDB.HasTable(&Good{}) {
 		if db.MysqlDB.HasTable(&Good{}) {
-			fmt.Println("user表创建成功")
+			fmt.Println("good表创建成功")
 		} else {
-			fmt.Println("user表创建失败")
+			fmt.Println("good表创建失败")
 		}
 	} else {
 		fmt.Println("表已存在")

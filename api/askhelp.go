@@ -16,7 +16,7 @@ func Askhelp(c *gin.Context) {
 	as := &model.Askhelp{}
 	err := c.BindJSON(as)
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register BindJSON err : %v", err))
+		fmt.Println(fmt.Errorf("askhelp BindJSON err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "数据格式不正确",
 		})
@@ -24,7 +24,7 @@ func Askhelp(c *gin.Context) {
 	}
 	err = as.CheckAskhelp()
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register Check err : %v", err))
+		fmt.Println(fmt.Errorf("askhelp Check err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})
@@ -33,7 +33,7 @@ func Askhelp(c *gin.Context) {
 	as.CreateTime = time.Now()
 	result := db.MysqlDB.Create(as)
 	if result.Error != nil {
-		fmt.Println(fmt.Errorf("Register Insert err : %v", err))
+		fmt.Println(fmt.Errorf("askhelp Insert err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})

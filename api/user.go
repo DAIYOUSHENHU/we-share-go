@@ -51,7 +51,7 @@ func Login(c *gin.Context) {
 	err := c.BindJSON(u)
 	//检查数据是否成功绑定
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register BindJSON err : %v", err))
+		fmt.Println(fmt.Errorf("login BindJSON err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "数据格式不正确",
 		})
@@ -60,7 +60,7 @@ func Login(c *gin.Context) {
 	// 检查login数据是否合法
 	err = u.CheckLogin()
 	if err != nil {
-		fmt.Println(fmt.Errorf("Register Check err : %v", err))
+		fmt.Println(fmt.Errorf("login Check err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})

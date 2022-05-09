@@ -15,7 +15,7 @@ func AddShareGood(c *gin.Context) {
 	g := &model.Good{}
 	err := c.BindJSON(g)
 	if err != nil {
-		fmt.Println(fmt.Errorf("askgood BindJSON err : %v", err))
+		fmt.Println(fmt.Errorf("good BindJSON err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "数据格式不正确",
 		})
@@ -23,7 +23,7 @@ func AddShareGood(c *gin.Context) {
 	}
 	err = g.CheckGood()
 	if err != nil {
-		fmt.Println(fmt.Errorf("askgood Check err : %v", err))
+		fmt.Println(fmt.Errorf("good Check err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})
@@ -32,7 +32,7 @@ func AddShareGood(c *gin.Context) {
 	g.CreateTime = time.Now()
 	result := db.MysqlDB.Create(g)
 	if result.Error != nil {
-		fmt.Println(fmt.Errorf("Register Insert err : %v", err))
+		fmt.Println(fmt.Errorf("good Insert err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": err.Error(),
 		})
@@ -49,7 +49,7 @@ func GetShareGood(c *gin.Context) {
 	g := &model.Good{}
 	err = c.BindJSON(g)
 	if err != nil {
-		fmt.Println(fmt.Errorf("askgood BindJSON err : %v", err))
+		fmt.Println(fmt.Errorf("good BindJSON err : %v", err))
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": "数据格式不正确",
 		})
