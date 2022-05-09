@@ -22,6 +22,7 @@ func RegRouter(g *gin.Engine) {
 
 	u.POST("/register", api.Register)
 	u.POST("/login", api.Login)
+	u.POST("/askhelp", api.Askhelp)
 
 	// 组织api接口
 	or := g.Group("/organ")

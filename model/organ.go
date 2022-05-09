@@ -10,11 +10,9 @@ import (
 type Organ struct {
 	ID        int64  `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
 	OrganName string `gorm:"type:varchar(20);not null" json:"organname"`
-	//用户名
-	UserId string `gorm:"type:varchar(20);not null" json:"userid"`
-	//密码
-
-	Deleted int `gorm:"type:int;not null" json:"delete"`
+	//用户id
+	UserId  string `gorm:"type:varchar(20);not null" json:"userid"`
+	Deleted int    `gorm:"type:int;not null" json:"delete"`
 
 	CreateTime time.Time
 }
