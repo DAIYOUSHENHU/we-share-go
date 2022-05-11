@@ -16,6 +16,8 @@ type TUser struct {
 	Pwd string `gorm:"type:varchar(20);not null" json:"pwd"`
 	//角色，0为普通用户，1为组织，2为管理员
 	Role int `gorm:"type:int;not null" json:"role"`
+	//组织状态 0为正常，1为禁用
+	State int64 `gorm:"type:int;not null" json:"state"`
 	//是否已删除.0为正常，1为已删除
 	Deleted int `gorm:"type:int;not null" json:"delete"`
 
@@ -102,8 +104,8 @@ func (c *TUser) CheckRole() int {
 
 func (c *TUser) GetUserInfo() TUser {
 	var user TUser
-	// db.MysqlDB.Where("user_name=?", c.UserName).First(&user).Count(&count)
-	db.MysqlDB.Select("id").Where("user_name=?", c.UserName).First(&user)
+	db.MysqlDB.Where("user_name=?", c.UserName).First(&user)
+	// db.MysqlDB.Select("id", "username", "role").Where("user_name=?", c.UserName).First(&user)
 	// 返回用户角色
 	return user
 }

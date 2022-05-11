@@ -70,6 +70,7 @@ func Login(c *gin.Context) {
 	role := u.CheckRole()
 
 	userInfo := u.GetUserInfo()
+	userInfo.Pwd = "******"
 	userInfoMarshal, err := json.Marshal(userInfo)
 	if err != nil {
 		fmt.Println(fmt.Errorf("Marshal userInfo err : %v", err))

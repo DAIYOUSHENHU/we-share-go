@@ -19,6 +19,8 @@ type Good struct {
 	UserPhone string `gorm:"type:varchar(20);not null" json:"userphone"`
 	//组织ID
 	OrganId int64 `gorm:"type:int;not null" json:"organid"`
+	//组织状态 0为审核中，1为已通过
+	Approve int64 `gorm:"type:int;not null" json:"approve"`
 	//物资共享状态 0为审核阶段  1为共享状态
 	ShareState int64 `gorm:"type:int;not null" json:"sharestate"`
 	//是否已删除.0为正常，1为已删除
@@ -63,6 +65,6 @@ func (g *Good) GetAllGoods() (goods []Good, err error) {
 
 func (g *Good) GetGoodsByName(goodName string) (goods []Good, err error) {
 	//select * from Good
-	db.MysqlDB.Where("good_name LIKE ?", goodName).Find(goods)
+	db.MysqlDB.Where("good_name LIKE ?", goodName).Find(&goods)
 	return
 }

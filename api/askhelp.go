@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -43,4 +44,41 @@ func Askhelp(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "ok",
 	})
+}
+
+func GetAskhelp(c *gin.Context) {
+	var err error
+	as := &model.Askhelp{}
+	err = c.BindJSON(as)
+	if err != nil {
+		fmt.Println(fmt.Errorf("askhelp BindJSON err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "数据格式不正确",
+		})
+		return
+	}
+	var askhelps []model.Askhelp
+	askhelps, err = as.GetAllaskhelps()
+	if err != nil {
+		fmt.Println(fmt.Errorf("GetAllaskhelps err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	askhelpsMarshal, err := json.Marshal(askhelps)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Marshal askhelp err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	fmt.Println(string(askhelpsMarshal))
+	c.JSON(http.StatusOK, gin.H{
+		"msg":  "ok",
+		"data": string(askhelpsMarshal),
+	})
+
 }

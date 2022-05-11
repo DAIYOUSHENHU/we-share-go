@@ -11,7 +11,17 @@ type Organ struct {
 	ID        int64  `gorm:"primary_key;AUTO_INCREMENT" json:"id"`
 	OrganName string `gorm:"type:varchar(20);not null" json:"organname"`
 	//用户id
-	UserId  int64 `gorm:"not null" json:"userid"`
+	UserId int64 `gorm:"not null" json:"userid"`
+	//组织电话
+	OrganAdress string `gorm:"type:varchar(100);not null" json:"organadress"`
+	//组织电话
+	OrganPhone string `gorm:"type:varchar(20);not null" json:"organphone"`
+	//组织描述
+	Desc string `gorm:"type:varchar(100)" json:"desc"`
+	//组织状态 0为审核中，1为已通过
+	Approve int64 `gorm:"type:int;not null" json:"approve"`
+	//组织状态 0为正常，1为禁用
+	State   int64 `gorm:"type:int;not null" json:"state"`
 	Deleted int   `gorm:"type:int;not null" json:"delete"`
 
 	CreateTime time.Time
@@ -42,5 +52,27 @@ func (c *Organ) CheckOrgan() error {
 		return errors.New("组织名已存在")
 	}
 
+	return nil
+}
+
+func (g *Organ) GetAllOrgans(code int) (organs []Organ, err error) {
+	//select * from Organ
+	db.MysqlDB.Where("approve=?", code).Find(&organs)
+	return
+}
+
+func (g *Organ) GetOrgansByName(code int, organName string) (organs []Organ, err error) {
+	//select * from Organ
+	db.MysqlDB.Where("code = ? AND organ_name LIKE ?", code, organName).Find(&organs)
+	return
+}
+
+//更新审核状态
+func (o *Organ) UpdateApprove(id int64, code int64) error {
+	var organ Organ
+	if o.Approve != 0 {
+		return errors.New("该用户已经过审核")
+	}
+	db.MysqlDB.Model(&organ).Where("id=?", id).Update("approve", code)
 	return nil
 }
