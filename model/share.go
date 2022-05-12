@@ -75,3 +75,10 @@ func (s *Share) UpdateApprove(id int64, code int64) error {
 	db.MysqlDB.Model(&share).Where("id=?", id).Update("approve", code)
 	return nil
 }
+
+//查询借用的物资
+func (s *Share) GetSharesBorrow(user_id int64) (shares []Share, err error) {
+	//select * from Good
+	db.MysqlDB.Where("user_id=? AND approve=?", user_id, 1).Find(&shares)
+	return
+}

@@ -25,6 +25,8 @@ func RegRouter(g *gin.Engine) {
 	//新增请求物资信息
 	u.POST("/addAskhelp", api.Askhelp)
 	u.POST("/getAskhelp", api.GetAskhelp)
+	u.POST("/getLend", api.GetLend)
+	u.POST("/getBorrow", api.GetBorrow)
 
 	// 组织api接口
 	or := g.Group("/organ")

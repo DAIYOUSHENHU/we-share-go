@@ -29,6 +29,26 @@ type Good struct {
 	CreateTime time.Time
 }
 
+type ShowShare struct {
+	ID int64 `json:"id"`
+	//物资名
+	GoodName string `json:"goodname"`
+	//物品描述
+	Desc string `json:"desc"`
+	//用户ID
+	UserId int64 `json:"userid"`
+	//用户名
+	UserName string `json:"username"`
+	//用户电话
+	UserPhone string `json:"userphone"`
+	//组织ID
+	OrganId int64 `json:"organid"`
+	//组织名
+	OrganName string `json:"organname"`
+	//组织地址
+	OrganAddress string `json:"organaddress"`
+}
+
 func (g *Good) CheckGood() error {
 	db.MysqlDB.AutoMigrate(&Good{})
 	if !db.MysqlDB.HasTable(&Good{}) {
@@ -57,9 +77,16 @@ func (g *Good) CheckGood() error {
 }
 
 //查询所有物资（共享）
-func (g *Good) GetAllShareGoods() (goods []Good, err error) {
+// func (g *Good) GetAllShareGoods() (goods []Good, err error) {
+// 	//select * from Good
+// 	db.MysqlDB.Where("approve=?", 1).Find(&goods)
+// 	return
+// }
+//查询所有物资（共享）
+func (g *Good) GetAllShareGoods() (res []ShowShare, err error) {
 	//select * from Good
-	db.MysqlDB.Where("approve=?", 1).Find(&goods)
+	// res := &[]ShowShare{}
+	db.MysqlDB.Table("good").Select("good.id, good.good_name, good.desc, good.user_id, good.organ_id, organ.organ_name, organ.organ_phone, organ.organ_address").Joins("left join organ ON organ.id = good.organ_id").Where("good.approve=? AND good.share_state=? AND organ.approve=?", 1, 0, 1).Scan(&res)
 	return
 }
 
@@ -84,4 +111,21 @@ func (g *Good) UpdateApprove(id int64, code int64) error {
 	}
 	db.MysqlDB.Model(&good).Where("id=?", id).Update("approve", code)
 	return nil
+}
+
+//更新审核状态
+func (g *Good) UpdateShareState(id int64, code int64) error {
+	var good Good
+	if g.Approve != 0 {
+		return errors.New("该物资已共享")
+	}
+	db.MysqlDB.Model(&good).Where("id=?", id).Update("share_state", code)
+	return nil
+}
+
+//查询借出的物资
+func (g *Good) GetGoodsLend(user_id int64) (goods []Good, err error) {
+	//select * from Good
+	db.MysqlDB.Where("user_id=? AND approve=?", user_id, 1).Find(&goods)
+	return
 }

@@ -243,7 +243,7 @@ func GetShareGood(c *gin.Context) {
 		})
 		return
 	}
-	var goods []model.Good
+	var goods []model.ShowShare
 	// 获取审核中的物资，0表示待审核
 	goods, err = g.GetAllShareGoods()
 	if err != nil {
@@ -253,7 +253,6 @@ func GetShareGood(c *gin.Context) {
 		})
 		return
 	}
-
 	goodsMarshal, err := json.Marshal(goods)
 	if err != nil {
 		fmt.Println(fmt.Errorf("Marshal good err : %v", err))
@@ -375,6 +374,16 @@ func AcceptShare(c *gin.Context) {
 		})
 		return
 	}
+	//更改物资状态
+	g := &model.Good{}
+	err = g.UpdateShareState(s.GoodId, 1)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Share update approve err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "ok",
@@ -405,4 +414,42 @@ func RefuseShare(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "ok",
 	})
+}
+
+func GetLend(c *gin.Context) {
+	var err error
+	u := &model.TUser{}
+	err = c.BindJSON(u)
+	if err != nil {
+		fmt.Println(fmt.Errorf("user BindJSON err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "数据格式不正确",
+		})
+		return
+	}
+	g := &model.Good{}
+	var goods []model.Good
+	goods, err = g.GetGoodsLend(u.ID)
+	if err != nil {
+		fmt.Println(fmt.Errorf("GetAllgoods err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	goodsMarshal, err := json.Marshal(goods)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Marshal askhelp err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	fmt.Println(string(goodsMarshal))
+	c.JSON(http.StatusOK, gin.H{
+		"msg":  "ok",
+		"data": string(goodsMarshal),
+	})
+
 }

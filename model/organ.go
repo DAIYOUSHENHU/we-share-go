@@ -46,7 +46,7 @@ func (c *Organ) CheckOrgan() error {
 	var or Organ
 	var count int
 	// 根据用户名查询
-	db.MysqlDB.Where("organ_name=?", c.OrganName).First(&or).Count(&count)
+	db.MysqlDB.Where("organ_name=? AND approve=?", c.OrganName, 1).First(&or).Count(&count)
 
 	if count != 0 {
 		return errors.New("组织名已存在")
