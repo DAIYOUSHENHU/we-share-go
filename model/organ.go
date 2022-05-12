@@ -13,7 +13,7 @@ type Organ struct {
 	//用户id
 	UserId int64 `gorm:"not null" json:"userid"`
 	//组织电话
-	OrganAdress string `gorm:"type:varchar(100);not null" json:"organadress"`
+	OrganAddress string `gorm:"type:varchar(100);not null" json:"organaddress"`
 	//组织电话
 	OrganPhone string `gorm:"type:varchar(20);not null" json:"organphone"`
 	//组织描述
@@ -75,4 +75,11 @@ func (o *Organ) UpdateApprove(id int64, code int64) error {
 	}
 	db.MysqlDB.Model(&organ).Where("id=?", id).Update("approve", code)
 	return nil
+}
+
+//根据 user_id 获取 organ_id
+func (o *Organ) GetOrganId(user_id int64) int64 {
+	var organ Organ
+	db.MysqlDB.Where("user_id=?", user_id).First(&organ)
+	return organ.ID
 }

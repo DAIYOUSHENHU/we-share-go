@@ -41,7 +41,17 @@ func RegRouter(g *gin.Engine) {
 	g1 := g.Group("/good")
 	//中间件
 	g1.Use(mid.MidCors)
+	g1.POST("/addGood", api.AddGood)
+	g1.POST("/getGoodApproveing", api.GetGoodApproveing)
+	g1.POST("/getGoodApproved", api.GetGoodApproved)
+	// g1.POST("/getGood", api.GetGood)
+	g1.POST("/acceptGood", api.AcceptGood)
+	g1.POST("/refuseGood", api.RefuseGood)
+
 	g1.POST("/addShareGood", api.AddShareGood)
 	g1.POST("/getShareGood", api.GetShareGood)
-
+	g1.POST("/getShareApproveing", api.GetShareApproveing)
+	g1.POST("/getShareApproved", api.GetShareApproved)
+	g1.POST("/acceptShare", api.AcceptShare)
+	g1.POST("/refuseShare", api.RefuseShare)
 }

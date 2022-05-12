@@ -19,7 +19,7 @@ type Good struct {
 	UserPhone string `gorm:"type:varchar(20);not null" json:"userphone"`
 	//组织ID
 	OrganId int64 `gorm:"type:int;not null" json:"organid"`
-	//组织状态 0为审核中，1为已通过
+	//物资审核状态 0为审核中，1为已通过
 	Approve int64 `gorm:"type:int;not null" json:"approve"`
 	//物资共享状态 0为审核阶段  1为共享状态
 	ShareState int64 `gorm:"type:int;not null" json:"sharestate"`
@@ -56,10 +56,17 @@ func (g *Good) CheckGood() error {
 	return nil
 }
 
-//查询所有
-func (g *Good) GetAllGoods() (goods []Good, err error) {
+//查询所有物资（共享）
+func (g *Good) GetAllShareGoods() (goods []Good, err error) {
 	//select * from Good
-	db.MysqlDB.Find(&goods)
+	db.MysqlDB.Where("approve=?", 1).Find(&goods)
+	return
+}
+
+//查询所有物资（审核）
+func (g *Good) GetAllGoods(organ_id int64, code int) (goods []Good, err error) {
+	//select * from Good
+	db.MysqlDB.Where("organ_id=? AND approve=?", organ_id, code).Find(&goods)
 	return
 }
 
@@ -67,4 +74,14 @@ func (g *Good) GetGoodsByName(goodName string) (goods []Good, err error) {
 	//select * from Good
 	db.MysqlDB.Where("good_name LIKE ?", goodName).Find(&goods)
 	return
+}
+
+//更新审核状态
+func (g *Good) UpdateApprove(id int64, code int64) error {
+	var good Good
+	if g.Approve != 0 {
+		return errors.New("该物资已经过审核")
+	}
+	db.MysqlDB.Model(&good).Where("id=?", id).Update("approve", code)
+	return nil
 }
