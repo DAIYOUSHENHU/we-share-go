@@ -23,6 +23,8 @@ type Good struct {
 	Approve int64 `gorm:"type:int;not null" json:"approve"`
 	//物资共享状态 0为审核阶段  1为共享状态
 	ShareState int64 `gorm:"type:int;not null" json:"sharestate"`
+	//物资状态 0为正常  1为禁用
+	State int64 `gorm:"type:int;not null" json:"state"`
 	//是否已删除.0为正常，1为已删除
 	Deleted int `gorm:"type:int;not null" json:"delete"`
 
@@ -86,7 +88,7 @@ func (g *Good) CheckGood() error {
 func (g *Good) GetAllShareGoods() (res []ShowShare, err error) {
 	//select * from Good
 	// res := &[]ShowShare{}
-	db.MysqlDB.Table("good").Select("good.id, good.good_name, good.desc, good.user_id, good.organ_id, organ.organ_name, organ.organ_phone, organ.organ_address").Joins("left join organ ON organ.id = good.organ_id").Where("good.approve=? AND good.share_state=? AND organ.approve=?", 1, 0, 1).Scan(&res)
+	db.MysqlDB.Table("good").Select("good.id, good.good_name, good.desc, good.user_id, good.organ_id, organ.organ_name, organ.organ_phone, organ.organ_address").Joins("left join organ ON organ.id = good.organ_id").Where("good.approve=? AND good.share_state=? AND organ.approve=? AND organ.state=?", 1, 0, 1, 0).Scan(&res)
 	return
 }
 
@@ -127,5 +129,27 @@ func (g *Good) UpdateShareState(id int64, code int64) error {
 func (g *Good) GetGoodsLend(user_id int64) (goods []Good, err error) {
 	//select * from Good
 	db.MysqlDB.Where("user_id=? AND approve=?", user_id, 1).Find(&goods)
+	return
+}
+
+//查询所有物资（管理）
+func (g *Good) GetAllGoodsManage(organ_id int64) (goods []Good, err error) {
+	//select * from Good
+	db.MysqlDB.Where("organ_id=? AND approve=? AND state=?", organ_id, 1, 0).Find(&goods)
+	return
+}
+
+//更新物资状态（禁用）
+func (g *Good) UpdateState(code int64) error {
+	var good Good
+	db.MysqlDB.Model(&good).Where("id=?", g.ID).Update("share_state", 1)
+	return nil
+}
+
+//查询所有物资（系统）
+func (g *Good) GetGoodTotal() (total int64, err error) {
+	//select * from Good
+	var good Good
+	db.MysqlDB.Model(&good).Where("approve=? And state=?", 1, 0).Count(&total)
 	return
 }

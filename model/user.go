@@ -120,3 +120,25 @@ func (c *TUser) UpdateRole(id int64) error {
 
 	return nil
 }
+
+//查询所有用户（管理）
+func (u *TUser) GetAllUsersManage() (users []TUser, err error) {
+	//select * from Good
+	db.MysqlDB.Find(&users)
+	return
+}
+
+//更新用户状态（禁用）
+func (u *TUser) UpdateState(code int64) error {
+	var user TUser
+	db.MysqlDB.Model(&user).Where("id=?", u.ID).Update("state", 1)
+	return nil
+}
+
+//查询所有用户（系统）
+func (u *TUser) GetUserTotal() (total int64, err error) {
+	//select * from Good
+	var users TUser
+	db.MysqlDB.Model(&users).Where("state=?", 0).Count(&total)
+	return
+}

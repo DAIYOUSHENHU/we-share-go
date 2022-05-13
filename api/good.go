@@ -453,3 +453,71 @@ func GetLend(c *gin.Context) {
 	})
 
 }
+
+//获取物资（管理）
+func GetGood(c *gin.Context) {
+	var err error
+	u := &model.TUser{}
+	err = c.BindJSON(u)
+	if err != nil {
+		fmt.Println(fmt.Errorf("organ BindJSON err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "数据格式不正确",
+		})
+		return
+	}
+	o := &model.Organ{}
+	organ_id := o.GetOrganId(u.ID)
+	fmt.Println(organ_id)
+	g := &model.Good{}
+	var goods []model.Good
+	// 获取管理的物资，0表示正常使用
+	goods, err = g.GetAllGoodsManage(organ_id)
+	if err != nil {
+		fmt.Println(fmt.Errorf("GetAllgoods err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	goodsMarshal, err := json.Marshal(goods)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Marshal good err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	fmt.Println(string(goodsMarshal))
+	c.JSON(http.StatusOK, gin.H{
+		"msg":  "ok",
+		"data": string(goodsMarshal),
+	})
+
+}
+
+//禁用物资（管理）
+func BanGood(c *gin.Context) {
+	var err error
+	g := &model.Good{}
+	err = c.BindJSON(g)
+	if err != nil {
+		fmt.Println(fmt.Errorf("organ BindJSON err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "数据格式不正确",
+		})
+		return
+	}
+	err = g.UpdateState(1)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Share update approve err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "ok",
+	})
+}

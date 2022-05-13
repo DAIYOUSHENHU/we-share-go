@@ -27,6 +27,12 @@ func RegRouter(g *gin.Engine) {
 	u.POST("/getAskhelp", api.GetAskhelp)
 	u.POST("/getLend", api.GetLend)
 	u.POST("/getBorrow", api.GetBorrow)
+	//获取用户（管理）
+	u.POST("/getUser", api.GetUser)
+	//禁用用户
+	u.POST("/banUser", api.BanUser)
+	// 系统信息
+	u.POST("/sysInfo", api.SysInfo)
 
 	// 组织api接口
 	or := g.Group("/organ")
@@ -38,6 +44,10 @@ func RegRouter(g *gin.Engine) {
 	// or.GET("/getOrganReject", api.GetOrganReject)
 	or.POST("/acceptOrgan", api.AcceptOrgan)
 	or.POST("/refuseOrgan", api.RefuseOrgan)
+	//获取组织（管理）
+	or.POST("/getOrgan", api.GetOrgan)
+	//禁用组织
+	or.POST("/banOrgan", api.BanOrgan)
 
 	// 物资api接口
 	g1 := g.Group("/good")
@@ -49,6 +59,10 @@ func RegRouter(g *gin.Engine) {
 	// g1.POST("/getGood", api.GetGood)
 	g1.POST("/acceptGood", api.AcceptGood)
 	g1.POST("/refuseGood", api.RefuseGood)
+	//获取物资（管理）
+	g1.POST("/getGood", api.GetGood)
+	//禁用物资
+	g1.POST("/banGood", api.BanGood)
 
 	g1.POST("/addShareGood", api.AddShareGood)
 	g1.POST("/getShareGood", api.GetShareGood)

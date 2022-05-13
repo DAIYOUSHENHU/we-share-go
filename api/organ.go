@@ -205,3 +205,60 @@ func RefuseOrgan(c *gin.Context) {
 		"msg": "ok",
 	})
 }
+
+//获取组织（管理）
+func GetOrgan(c *gin.Context) {
+	var err error
+	o := &model.Organ{}
+
+	var organs []model.Organ
+	// 获取管理的物资，0表示正常使用
+	organs, err = o.GetAllOrgansManage()
+	if err != nil {
+		fmt.Println(fmt.Errorf("GetAllorgans err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+
+	organsMarshal, err := json.Marshal(organs)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Marshal good err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	fmt.Println(string(organsMarshal))
+	c.JSON(http.StatusOK, gin.H{
+		"msg":  "ok",
+		"data": string(organsMarshal),
+	})
+
+}
+
+//禁用组织（管理）
+func BanOrgan(c *gin.Context) {
+	var err error
+	o := &model.Organ{}
+	err = c.BindJSON(o)
+	if err != nil {
+		fmt.Println(fmt.Errorf("organ BindJSON err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "数据格式不正确",
+		})
+		return
+	}
+	err = o.UpdateState(1)
+	if err != nil {
+		fmt.Println(fmt.Errorf("Share update approve err : %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "ok",
+	})
+}

@@ -49,3 +49,11 @@ func (as *Askhelp) GetAllaskhelps() (askhelps []Askhelp, err error) {
 	db.MysqlDB.Find(&askhelps)
 	return
 }
+
+//查询所有物资（系统）
+func (as *Askhelp) GetAskhelpTotal() (total int64, err error) {
+	//select * from Good
+	var askhelp Askhelp
+	db.MysqlDB.Model(&askhelp).Count(&total)
+	return
+}

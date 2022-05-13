@@ -82,3 +82,11 @@ func (s *Share) GetSharesBorrow(user_id int64) (shares []Share, err error) {
 	db.MysqlDB.Where("user_id=? AND approve=?", user_id, 1).Find(&shares)
 	return
 }
+
+//查询所有共享（系统）
+func (s *Share) GetShareTotal() (total int64, err error) {
+	//select * from Good
+	var share Share
+	db.MysqlDB.Model(&share).Where("approve=?", 1).Count(&total)
+	return
+}

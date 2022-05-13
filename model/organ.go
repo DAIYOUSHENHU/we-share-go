@@ -83,3 +83,25 @@ func (o *Organ) GetOrganId(user_id int64) int64 {
 	db.MysqlDB.Where("user_id=?", user_id).First(&organ)
 	return organ.ID
 }
+
+//查询所有组织（管理）
+func (o *Organ) GetAllOrgansManage() (organs []Organ, err error) {
+	//select * from Good
+	db.MysqlDB.Where("approve=? AND state=?", 1, 0).Find(&organs)
+	return
+}
+
+//更新组织状态（禁用）
+func (o *Organ) UpdateState(code int64) error {
+	var organ Organ
+	db.MysqlDB.Model(&organ).Where("id=?", o.ID).Update("state", 1)
+	return nil
+}
+
+//查询所有组织（系统）
+func (o *Organ) GetOrganTotal() (total int64, err error) {
+	//select * from Good
+	var organ Organ
+	db.MysqlDB.Model(&organ).Where("approve=? And state=?", 1, 0).Count(&total)
+	return
+}
