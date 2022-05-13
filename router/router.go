@@ -33,6 +33,10 @@ func RegRouter(g *gin.Engine) {
 	u.POST("/banUser", api.BanUser)
 	// 系统信息
 	u.POST("/sysInfo", api.SysInfo)
+	//记录日志
+	u.POST("/addLog", api.AddLog)
+	//获取日志
+	u.POST("/getLog", api.GetLog)
 
 	// 组织api接口
 	or := g.Group("/organ")
